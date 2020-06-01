@@ -1,4 +1,4 @@
-Xpenology AMD hardvare virtualization
+**Xpenology AMD hardware virtualization**
 
 Hi guys, this is instruction for kvm-amd.ko and libvirtd launch om HP MicroServer GEN 10 ( AMD Opteron X3216 APU with svm ( AMD-V ))
 
