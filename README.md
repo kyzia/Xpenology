@@ -9,8 +9,9 @@ TL/DR: I'm try to use virtualization with hardware acceleration on Hp MicroServe
  * write some autostart scripts
 
 **1. Install and update debian chroot**
+
 You can do it in your own system or on Synology NAS.
-If you preferre Xpenology - follow instruction from here ( install package from Synology Community ):
+If you preferred Xpenology - follow instruction from here ( install package from Synology Community ):
 
 https://github.com/SynoCommunity/spksrc/wiki/Debian-Chroot
 
@@ -31,6 +32,7 @@ root@DiskStation:/# dpkg-reconfigure locales
 
 
 **2. Prepare enviroment**
+
 This instruction was taken from https://blog.4sag.ru/kompilyatsiya-modulej-dsm-6-2/ , all the same, but kernel version is different.
 ```
 root@DiskStation:/# apt-get install mc make gcc build-essential kernel-wedge libncurses5 libncurses5-dev libelf-dev binutils-dev kexec-tools makedumpfile fakeroot lzma bc libssl-dev openssl vim netcat-openbsd 
@@ -68,6 +70,7 @@ root@DiskStation:/# dsm6make menuconfig ( 1. Go to Virtualization ->  KVM for AM
 ```
 
 Check diff with default config (tun device turned on by default, so tun doesnot visible in this diff):
+
 ```
 root@DiskStation:/dsmsrc/linux-4.4.x# diff synoconfigs/apollolake .config
 3c3
@@ -81,11 +84,13 @@ root@DiskStation:/dsmsrc/linux-4.4.x# diff synoconfigs/apollolake .config
 ```
 
 Make alias:
+
 ```
 alias dsm6make='make ARCH=x86_64 CROSS_COMPILE=/dsmsrc/x86_64-pc-linux-gnu/bin/x86_64-pc-linux-gnu-'
 ```
 
-Comment unwanted check in virtext.h code (Xpenology thinks that we have Intel CPU and doesnot want launch svm virtualization with message like "has_svm: not amd"):
+Comment unwanted check in virtext.h code (Xpenology write intel to boot_cpu_data.x86_vendor, and does'not want to launch svm virtualization with message like "has_svm: not amd"):
+
 ```
    84  vi arch/x86/include/asm/virtext.h
    
@@ -110,23 +115,28 @@ static inline int cpu_has_svm(const char **msg)
    
 **3.Make modules.**
 
+
 kvm-amd.ko:
 ```
 root@DiskStation:/dsmsrc/linux-4.4.x# dsm6make modules M=$(pwd)/arch/x86/kvm
 ```
 Tun (and other network drivers):
+
 ```
 root@DiskStation:/dsmsrc/linux-4.4.x# dsm6make modules M=$(pwd)/drivers/net
 ```
+
 If you do something wrong - you can remove all prevously compiled files by commands:
 
 kvm-amd.ko:
+
 ```
 root@DiskStation:/dsmsrc/linux-4.4.x# make clean M=$(pwd)/arch/x86/kvm
   CLEAN   /dsmsrc/linux-4.4.x/arch/x86/kvm/.tmp_versions
   CLEAN   /dsmsrc/linux-4.4.x/arch/x86/kvm/Module.symvers
 ```
 Tun.ko (and other network drivers):
+
 ```
 root@DiskStation:/dsmsrc/linux-4.4.x# make clean M=$(pwd)/drivers/net
 ```
@@ -140,7 +150,7 @@ oleg@DiskStation:~$  sudo insmod /volume1/@appstore/debian-chroot/var/chroottarg
 oleg@DiskStation:~$ sudo insmod /volume1/@appstore/debian-chroot/var/chroottarget/dsmsrc/linux-4.4.x/drivers/net/tun.ko
 ```
 
-Check that modules was loaded property by "dmesg" command (you can launch this command without grep to see all messages, check the time - when event happend )
+Check that modules was loaded property by "dmesg" command (you can launch this command without grep to see all related messages, check the time - when event happend )
 
 amd-kvm:
 
@@ -187,7 +197,7 @@ okkk@SWARM:~/.ssh$ cat synkey.pub
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQA=
 ```
 
-Copy to Synology station into root home dir:
+Copy key to Synology station into root home dir:
 
 ```
 oleg@DiskStation:~$ sudo su
@@ -203,7 +213,9 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQA=
 ```
 *Warning* for external connection maybe you will need check libvirtd config in /etc/libvirt/libvirtd.conf
 
+
 **6. Use openbsd syntax netcat (libvirtd required), and some packages and libs**
+
 
 Symlink it from chroot:
 ```
@@ -218,6 +230,7 @@ oleg@DiskStation:/lib$ sudo ln -sf /volume1/@appstore/debian-chroot/var/chrootta
 ```
 
 **7. Launch libvirtd and connect**
+
 
 ```
 oleg@DiskStation:~$ sudo libvirtd
@@ -236,6 +249,7 @@ qemu+ssh://root@10.0.0.8/system
 ```
 
 **8. Click on link and create new virtual machine**
+
 
 Click on new connection and select - create new machine.
 
@@ -282,7 +296,8 @@ Fix nic config - use openswitch for network, for nic use config (XML section) li
 </interface>
 ```
 
-Check that vnet0 was added to needed openswitch brifge: 
+Check that vnet0 was added to needed openswitch bridge: 
+
 ```
 oleg@DiskStation:~$ sudo ovs-vsctl show
 63b4b6f2-53ba-42e8-92a0-b7c84e3da6c9
@@ -309,5 +324,12 @@ oleg@DiskStation:~$ ps ajfx | grep qemu
 23514 24431 24430 23514 pts/16   24430 S+    1026   0:00  |           \_ grep --color=auto qemu
     1 23640 23638 23638 ?           -1 Sl       0   0:05 /usr/local/bin/qemu-system-x86_64 -name ubuntu18.04 -S -machine pc-q35-2.12,accel=kvm,usb=off,vmport=off -cpu Opteron_G5 -m 1024 -realtime mlock=off -smp 1,sockets=1,cores=1,threads=1 -uuid 1849696a-2f7b-48b8-affa-df947c048dd4 -no-user-config -nodefaults -chardev socket,id=charmonitor,path=/var/lib/libvirt/qemu/ubuntu18.04.monitor,server,nowait -mon chardev=charmonitor,id=monitor,mode=control -rtc base=utc,driftfix=slew -global kvm-pit.lost_tick_policy=discard -no-hpet -no-shutdown -global PIIX4_PM.disable_s3=1 -global PIIX4_PM.disable_s4=1 -boot strict=on -device i82801b11-bridge,id=pci.1,bus=pcie.0,addr=0x1e -device pci-bridge,chassis_nr=2,id=pci.2,bus=pci.1,addr=0x1 -device ich9-usb-ehci1,id=usb,bus=pci.2,addr=0x2.0x7 -device ich9-usb-uhci1,masterbus=usb.0,firstport=0,bus=pci.2,multifunction=on,addr=0x2 -device ich9-usb-uhci2,masterbus=usb.0,firstport=2,bus=pci.2,addr=0x2.0x1 -device ich9-usb-uhci3,masterbus=usb.0,firstport=4,bus=pci.2,addr=0x2.0x2 -device virtio-serial-pci,id=virtio-serial0,bus=pci.2,addr=0x3 -drive file=/volume1/files/ubuntu-mate-18.04.1-desktop-amd64.iso,format=raw,if=none,media=cdrom,id=drive-sata0-0-0,readonly=on -device ide-cd,bus=ide.0,drive=drive-sata0-0-0,id=sata0-0-0,bootindex=1 -drive file=/volume1/files/virtual_xpe/ubuntu18.04.raw,format=raw,if=none,id=drive-virtio-disk0 -device virtio-blk-pci,scsi=off,bus=pci.2,addr=0x6,drive=drive-virtio-disk0,id=virtio-disk0 -netdev tap,fd=17,id=hostnet0 -device rtl8139,netdev=hostnet0,id=net0,mac=52:54:00:71:b1:b6,bus=pcie.0,addr=0x3 -chardev pty,id=charserial0 -device isa-serial,chardev=charserial0,id=serial0 -chardev socket,id=charchannel0,path=/var/lib/libvirt/qemu/channel/target/ubuntu18.04.org.qemu.guest_agent.0,server,nowait -device virtserialport,bus=virtio-serial0.0,nr=1,chardev=charchannel0,id=channel0,name=org.qemu.guest_agent.0 -device usb-tablet,id=input0 -vnc 127.0.0.1:0 -device VGA,id=video0,vgamem_mb=16,bus=pcie.0,addr=0x1 -device ich9-intel-hda,id=sound0,bus=pci.2,addr=0x1 -device hda-duplex,id=sound0-codec0,bus=sound0.0,cad=0 -device virtio-balloon-pci,id=balloon0,bus=pci.2,addr=0x4 -msg timestamp=on
 ```
+
+**10.Write some autostart scripts fo libvirtd and modules**
+
+in progress.
+
+
+
 
 That's all, folks!
