@@ -343,6 +343,12 @@ https://github.com/seba76/phpvirtualbox4dsm/releases/tag/6.0-0
 
 Go to http://10.0.0.8/phpvirtualbox4dsm/ - create new virtual machines.
 
+**Warning** If you get error like "Failed to load R0 module /opt/VirtualBox/VMMR0.r0: Symlinks are not permitted: '/opt'" : as workaround - simply copy opt to /root? for example:
+
+```
+root@DiskStation:/$ cp -r /volume1/@entware-ng/opt .
+```
+
 Enjoy!
 
 That's all, folks!
