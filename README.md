@@ -222,11 +222,8 @@ Symlink it from chroot:
 oleg@DiskStation:~$ cd /bin/
 oleg@DiskStation:/bin$ sudo ln -sf /volume1/@appstore/debian-chroot/var/chroottarget/bin/nc.openbsd .
 oleg@DiskStation:/bin$ sudo ln -sf nc.openbsd nc
-oleg@DiskStation:/bin$ sudo ln -sf /volume1/@appstore/debian-chroot/var/chroottarget/sbin/ebtables .
-
 oleg@DiskStation:/bin$ cd /lib
 oleg@DiskStation:/lib$ sudo ln -sf /volume1/@appstore/debian-chroot/var/chroottarget/lib/libbsd.so.0 .
-oleg@DiskStation:/lib$ sudo ln -sf /volume1/@appstore/debian-chroot/var/chroottarget/lib/ebtables .
 ```
 
 **7. Launch libvirtd and connect**
