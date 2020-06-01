@@ -326,7 +326,23 @@ oleg@DiskStation:~$ ps ajfx | grep qemu
 
 in progress.
 
+**11. Install virtualbox and web interface for it**
+
+Check readme for virtualbox (turn off openswitch): https://github.com/seba76/virtualbox4dsm
+
+Install Web Station package, install php 7.3 package.
+
+Download spk for virtualbox 6.0 and install it:
+
+https://github.com/seba76/virtualbox4dsm/releases/tag/6.0.8-130520.1
 
 
+Download phpvirtualbox4dsm for virtualbox 6.0 and install it: 
+
+https://github.com/seba76/phpvirtualbox4dsm/releases/tag/6.0-0
+
+Go to http://10.0.0.8/phpvirtualbox4dsm/ - create new virtual machines.
+
+Enjoy!
 
 That's all, folks!
