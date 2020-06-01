@@ -349,6 +349,23 @@ Go to http://10.0.0.8/phpvirtualbox4dsm/ - create new virtual machines.
 root@DiskStation:/$ cp -r /volume1/@entware-ng/opt .
 ```
 
-Enjoy!
+If console doesnot work properly and remote display disabled (or grey) - you need check that vrde is enabled for you vm:
+
+```
+oleg@DiskStation:~$ sudo /opt/VirtualBox/VBoxManage showvminfo "YOUR_VM_NAME" | grep "VRDE"
+```
+
+And fix VRDE ( Virtual box remote display ) ports in config:
+```
+oleg@DiskStation:~$ sudo vi /volume1/web/phpvirtualbox4dsm/config.php
+
+/* Set the standard VRDE Port Number / Range, e.g. 1010-1020 or 1027 */
+var $vrdeports = '3389-4000';
+/* Set the default VRDE address, e.g. 192.168.1.1 */
+var $vrdeaddress = '10.0.0.8';
+```
+
+After that - install flash and enjoy!
+
 
 That's all, folks!
