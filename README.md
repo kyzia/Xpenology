@@ -7,6 +7,11 @@ TL/DR: I'm try to use virtualization with hardware acceleration on Hp MicroServe
  * launch virtual machines via internal VMM manager still failed (error "Failed to power on the virtual machine [somemachine] on the host [DiskStation]." )
  * i'm use raw for qemu (but you can make qcow2 image somewere else or link qemu-img from /volume1/@appstore/Virtualization/bin dir)
  * write some autostart scripts
+ 
+ **0. Install VMM manager**
+ 
+ If you need qemu virtualization - you need install VMM manager - for installing qemu and libvirt in system.
+ If you use Virtualbox virtualization - remove VMM manager and turn off openswitch.
 
 **1. Install and update debian chroot**
 
