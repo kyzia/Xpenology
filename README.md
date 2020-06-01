@@ -353,6 +353,20 @@ If console doesnot work properly and remote display disabled (or grey) - you nee
 
 ```
 oleg@DiskStation:~$ sudo /opt/VirtualBox/VBoxManage showvminfo "YOUR_VM_NAME" | grep "VRDE"
+/opt/VirtualBox/VBoxManage showvminfo "ubuntuRuler" | grep "VRDE"
+/opt/VirtualBox/VBoxManage: /lib/libstdc++.so.6: no version information available (required by /opt/VirtualBox/VBoxManage)
+/opt/VirtualBox/VBoxManage: /lib/libstdc++.so.6: no version information available (required by /opt/VirtualBox/VBoxManage)
+/opt/VirtualBox/VBoxManage: /lib/libstdc++.so.6: no version information available (required by /opt/VirtualBox/VBoxDDU.so)
+/opt/VirtualBox/VBoxManage: /lib/libstdc++.so.6: no version information available (required by /opt/VirtualBox/VBoxRT.so)
+/opt/VirtualBox/VBoxManage: /lib/libstdc++.so.6: no version information available (required by /opt/VirtualBox/VBoxRT.so)
+/opt/VirtualBox/VBoxManage: /lib/libstdc++.so.6: no version information available (required by /opt/VirtualBox/VBoxXPCOM.so)
+/opt/VirtualBox/VBoxManage: /lib/libstdc++.so.6: no version information available (required by /opt/VirtualBox/VBoxXPCOM.so)
+VRDE:                        enabled (Address 0.0.0.0, Ports 3389-4000, MultiConn: off, ReuseSingleConn: off, Authentication type: null)
+VRDE port:                   3389
+VRDE property               : TCP/Ports  = "3389-4000"
+VRDE property               : TCP/Address = <not set>
+VRDE property               : VideoChannel/Enabled = <not set>
+
 ```
 
 And fix VRDE ( Virtual box remote display ) ports in config:
