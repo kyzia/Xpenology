@@ -5,7 +5,7 @@ Hi guys, this is instruction for kvm-amd.ko and libvirtd launch om HP MicroServe
 TL/DR: I'm try to use virtualization with hardware acceleration on Hp MicroServer Gen 10 and succesfully launch Ubuntu 18.04 with it. What else needs to be done here:
 
  * launch virtual machines via internal VMM manager still failed (error "Failed to power on the virtual machine [somemachine] on the host [DiskStation]." )
- * i'm use raw for qemu (but you can make qcow2 image somewere else)
+ * i'm use raw for qemu (but you can make qcow2 image somewere else or link qemu-img from /volume1/@appstore/Virtualization/bin dir)
  * write some autostart scripts
 
 **1. Install and update debian chroot**
